@@ -15,18 +15,18 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from order
+    from `order`
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from order
+    delete from `order`
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.song.alipay.domain.Order" >
     <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into order (goods_name, amount, status, 
+    insert into `order` (goods_name, amount, status,
       seller_id, ali_trade_no)
     values (#{goodsName,jdbcType=VARCHAR}, #{amount,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, 
       #{sellerId,jdbcType=INTEGER}, #{aliTradeNo,jdbcType=VARCHAR})
@@ -35,7 +35,7 @@
     <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into order
+    insert into `order`
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="goodsName != null" >
         goods_name,
@@ -72,7 +72,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.song.alipay.domain.Order" >
-    update order
+    update `order`
     <set >
       <if test="goodsName != null" >
         goods_name = #{goodsName,jdbcType=VARCHAR},
@@ -93,7 +93,7 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.song.alipay.domain.Order" >
-    update order
+    update `order`
     set goods_name = #{goodsName,jdbcType=VARCHAR},
       amount = #{amount,jdbcType=INTEGER},
       status = #{status,jdbcType=VARCHAR},
@@ -101,4 +101,10 @@
       ali_trade_no = #{aliTradeNo,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+
+
+  <select id="listOrder" resultType="com.song.alipay.domain.Order">
+    select * from `order`
+  </select>
 </mapper>

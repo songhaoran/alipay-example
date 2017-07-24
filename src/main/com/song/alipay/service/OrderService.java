@@ -1,11 +1,16 @@
 package com.song.alipay.service;
 
+import com.github.pagehelper.PageInfo;
 import com.song.alipay.domain.Order;
+import com.song.alipay.dto.query.OrderQuery;
 
 /**
  * Created by Song on 2017/7/20.
  */
 public interface OrderService {
+
+    PageInfo<Order> pageOrders(OrderQuery query);
+
 
     Boolean save(Order order);
 

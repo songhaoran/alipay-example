@@ -4,15 +4,20 @@ import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.request.AlipayTradeRefundRequest;
 import com.alipay.api.request.AlipayTradeWapPayRequest;
 import com.alipay.api.response.AlipayTradeRefundResponse;
+import com.alipay.api.response.AlipayTradeWapPayResponse;
+import com.github.pagehelper.PageInfo;
 import com.song.alipay.common.AccessURL;
 import com.song.alipay.dao.OrderMapper;
 import com.song.alipay.domain.Order;
+import com.song.alipay.dto.query.OrderQuery;
 import com.song.alipay.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * Created by Song on 2017/7/20.
@@ -26,9 +31,19 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private DefaultAlipayClient alipayClient;
 
+    @Override
+    public PageInfo<Order> pageOrders(OrderQuery query) {
+        //PageHelper.startPage(query.getPageNum(), query.getPageSize());
+        List<Order> list = orderMapper.listOrder();
+        return new PageInfo<>(list);
+    }
+
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, rollbackFor = Exception.class)
     @Override
     public Boolean save(Order order) {
+        if (order != null && order.getId() == null) {
+            order.setStatus("0");
+        }
         return orderMapper.insert(order) > 0 ? true : false;
     }
 
@@ -61,7 +76,9 @@ public class OrderServiceImpl implements OrderService {
                 "    \"product_code\":\"QUICK_WAP_PAY\"" +
                 "  }");//填充业务参数
 
-        return alipayClient.execute(payRequest).getBody();
+        AlipayTradeWapPayResponse response = alipayClient.execute(payRequest);
+        String body = response.getBody();
+        return body;
     }
 
     @Override
